@@ -95,7 +95,7 @@ class PerturbationTool():
 
         return perturb_img, eta
 
-    def min_max_attack(self, images, labels, model, optimizer, criterion, ensemble_size, random_noise=None, sample_wise=False):
+    def min_max_attack(self, images, labels, model, optimizer, criterion, random_noise=None, sample_wise=False):
         if random_noise is None:
             random_noise = torch.FloatTensor(*images.shape).uniform_(-self.epsilon, self.epsilon).to(device)
 

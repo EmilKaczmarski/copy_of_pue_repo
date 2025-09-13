@@ -506,9 +506,9 @@ def main():
         logger.info(noise.shape)
         logger.info('Noise saved at %s' % (os.path.join(args.exp_name, 'perturbation.pt')))
     elif args.attack_type == 'min-min' or args.attack_type == 'min-max':
-        if args.attack_type == 'min-max':
-            # min-max noise need model to converge first
-            train(0, model, optimizer, scheduler, trainer, evaluator, ENV, data_loader)
+        # if args.attack_type == 'min-max':
+        #     # min-max noise need model to converge first
+        #     # train(0, model, optimizer, scheduler, trainer, evaluator, ENV, data_loader)
         if args.random_start:
             random_noise = noise_generator.random_noise(noise_shape=args.noise_shape)
         else:

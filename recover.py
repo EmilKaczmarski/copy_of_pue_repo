@@ -43,6 +43,7 @@ parser.add_argument('--recover_rate', default=0.2, type=float, help='proportion 
 parser.add_argument('--eta', default=1.0, type=float, help='parameter l2 radius')
 parser.add_argument('--greedy', action='store_true', default=False, help='Use Gaussian greedy search')
 parser.add_argument('--project', action='store_true', default=False, help='Use projected SGD')
+parser.add_argument('--posion_model_path', default=None, type=str)
 args = parser.parse_args()
 
 
@@ -194,12 +195,16 @@ def main():
            'cm_history': [],}
 
     if args.load_model:
-        checkpoint = util.load_model(filename=checkpoint_path_file,
-                                     model=poison_model,  # <-- CHANGE: Load into poison_model
-                                     optimizer=None,
-                                     alpha_optimizer=None,
-                                     scheduler=None)
-        logger.info("File %s loaded into TARGET model!" % (checkpoint_path_file))
+        # Create a separate poison_model instance with the same architecture
+        poison_base_model = config.model().to(device)
+        
+        # Load the weights from the specified path
+        poison_model = util.load_model(filename=args.posion_model_path,
+                                       model=poison_base_model,
+                                       optimizer=None,
+                                       alpha_optimizer=None,
+                                       scheduler=None)
+        logger.info("File %s loaded into TARGET model!" % (args.posion_model_path))
         
         # We no longer copy 'model' because we want it to stay random.
         # The line `poison_model = copy.deepcopy(model)` is now removed.

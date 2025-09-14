@@ -199,12 +199,13 @@ def main():
         poison_base_model = config.model().to(device)
         
         # Load the weights from the specified path
-        poison_model = util.load_model(filename=args.posion_model_path,
+        poison_model = args.posion_model_path.replace('.pth', '')
+        poison_model = util.load_model(filename=poison_model,
                                        model=poison_base_model,
                                        optimizer=None,
                                        alpha_optimizer=None,
                                        scheduler=None)
-        logger.info("File %s loaded into TARGET model!" % (args.posion_model_path))
+        logger.info("File %s loaded into TARGET model!" % (poison_model))
         
         # We no longer copy 'model' because we want it to stay random.
         # The line `poison_model = copy.deepcopy(model)` is now removed.

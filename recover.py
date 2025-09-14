@@ -196,16 +196,13 @@ def main():
 
     if args.load_model:
         # Create a separate poison_model instance with the same architecture
-        poison_base_model = config.model().to(device)
+        poison_model = config.model().to(device)
         
-        # Load the weights from the specified path
-        poison_model = args.posion_model_path.replace('.pth', '')
-        poison_model = util.load_model(filename=poison_model,
-                                       model=poison_base_model,
-                                       optimizer=None,
-                                       alpha_optimizer=None,
-                                       scheduler=None)
-        logger.info("File %s loaded into TARGET model!" % (poison_model))
+        # Load pure state dict weights directly
+        state_dict = torch.load(args.posion_model_path, map_location=device)
+        poison_model.load_state_dict(state_dict)
+        
+        logger.info("Pure state dict loaded from %s into TARGET model!" % (args.posion_model_path))
         
         # We no longer copy 'model' because we want it to stay random.
         # The line `poison_model = copy.deepcopy(model)` is now removed.
